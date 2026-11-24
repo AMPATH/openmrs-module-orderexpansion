@@ -6,18 +6,18 @@ Builds run on every push and pull request to `main`. Pushes to `main` and GitHub
 
 ## Overview
 
-The Order Expansion module enhances the order management capabilities of KenyaEMR, an implementation of OpenMRS. It introduces support for additional order types, including:
+The Order Expansion module adds order types to OpenMRS that core does not provide. AMPATH uses it for:
 
-1. Procedure Orders
-2. Radiology Orders (e.g., imaging, scans)
-3. Medical Supply Orders (e.g., consumables, laboratory reagents)
+1. Medical Supply Orders (`medicalsupplyorder`): consumables and supplies ordered with a quantity and quantity units.
 
-This expansion allows for more comprehensive and specialized order management within the KenyaEMR system.
+Release 2.0.0 removed the procedure order, procedure and medical supply dispense features, which AMPATH does not use. Procedure and radiology orders at AMPATH are plain OpenMRS orders created by the O3 order basket.
+
+Order types are not created by this module. They are defined in AMPATH's Initializer configuration (`ordertypes.csv`).
 
 ## Features
 
-- Seamless integration with existing KenyaEMR order management
-- Support for procedure, radiology, and medical supply order types
+- `MedicalSupplyOrder` order subclass, stored in `medical_supplies_order`, exposed over REST as type `medicalsupplyorder`
+- Requires OpenMRS Platform 2.6.1 or later (2.x)
 
 ## Prerequisites
 

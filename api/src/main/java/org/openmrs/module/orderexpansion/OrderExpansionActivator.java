@@ -20,7 +20,7 @@ import org.openmrs.module.BaseModuleActivator;
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
-public class ProceduresActivator extends BaseModuleActivator {
+public class OrderExpansionActivator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
@@ -28,14 +28,14 @@ public class ProceduresActivator extends BaseModuleActivator {
 	 * @see org.openmrs.module.Activator#startup()
 	 */
 	public void startup() {
-		log.info("Starting Procedure Module");
+		log.info("Starting Order Expansion Module");
 	}
 	
 	/**
 	 * @see org.openmrs.module.Activator#shutdown()
 	 */
 	public void shutdown() {
-		log.info("Shutting Procedure Module");
+		log.info("Shutting down Order Expansion Module");
 	}
 	
 }
