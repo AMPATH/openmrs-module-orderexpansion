@@ -11,9 +11,9 @@
 
 
 	<scm>
-		<connection>scm:git:git@github.com:openmrs/openmrs-module-basicmodule.git</connection>
-		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-basicmodule.git</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-basicmodule/</url>
+		<connection>scm:git:git@github.com:AMPATH/openmrs-module-orderexpansion.git</connection>
+		<developerConnection>scm:git:git@github.com:AMPATH/openmrs-module-orderexpansion.git</developerConnection>
+		<url>https://github.com/AMPATH/openmrs-module-orderexpansion/</url>
 	</scm>
 
 	<developers>
@@ -54,14 +54,14 @@
 
 	<distributionManagement>
 		<repository>
-			<id>mks-nexus-public-releases</id>
-			<name>Mekom Solutions Nexus repo for releases</name>
-			<url>https://nexus.mekomsolutions.net/repository/maven-releases</url>
+			<id>O3-amrs</id>
+			<name>AMRS GitHub</name>
+			<url>https://maven.pkg.github.com/AMPATH/openmrs-module-orderexpansion</url>
 		</repository>
 		<snapshotRepository>
-			<id>mks-nexus-public-snapshots</id>
-			<name>Mekom Solutions Nexus repo for snapshots</name>
-			<url>https://nexus.mekomsolutions.net/repository/maven-snapshots</url>
+			<id>O3-amrs</id>
+			<name>AMRS GitHub</name>
+			<url>https://maven.pkg.github.com/AMPATH/openmrs-module-orderexpansion</url>
 		</snapshotRepository>
 	</distributionManagement>
 
