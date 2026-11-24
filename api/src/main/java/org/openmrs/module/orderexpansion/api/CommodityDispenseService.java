@@ -37,8 +37,9 @@ public interface CommodityDispenseService extends OpenmrsService {
 	/**
 	 * Creates or updates a dispense, then updates the order's fulfiller status.
 	 *
-	 * @throws APIException if the order type is not dispensable, the order is not active, the change is
-	 *             not an allowed status change, or the quantity would exceed the order
+	 * @throws org.openmrs.api.ValidationException (an {@link APIException}, returned by REST as 400) if
+	 *             the dispense is invalid, the order type is not dispensable, the order is not active,
+	 *             the change is not an allowed status change, or the quantity would exceed the order
 	 */
 	@Authorized(PrivilegeConstants.EDIT_ORDERS)
 	CommodityDispense saveCommodityDispense(CommodityDispense dispense) throws APIException;
