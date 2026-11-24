@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Objects;
 
 import org.openmrs.Order;
-import org.openmrs.api.APIException;
+import org.openmrs.api.ValidationException;
 import org.openmrs.module.orderexpansion.api.model.CommodityDispense;
 import org.openmrs.module.orderexpansion.api.model.CommodityDispense.Status;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 
 /**
  * Rules that span several dispense rows or a row's saved state. Pure functions, so they are unit
@@ -86,23 +88,23 @@ public final class DispenseRules {
 			return;
 		}
 		if (!Objects.equals(before.getOrderId(), after.getOrder().getOrderId())) {
-			throw new APIException("A dispense cannot be moved to a different order");
+			throw reject(after, "A dispense cannot be moved to a different order");
 		}
 		if (before.getBillReference() != null && !before.getBillReference().equals(after.getBillReference())) {
-			throw new APIException("The bill reference of a dispense cannot be changed once set");
+			throw reject(after, "The bill reference of a dispense cannot be changed once set");
 		}
 		boolean quantityChanged = !sameQuantity(before.getQuantity(), after.getQuantity());
 		if (before.getStatus() == Status.PENDING) {
 			if (quantityChanged && before.getBillReference() != null) {
-				throw new APIException("The quantity of a billed dispense cannot be changed; void it and dispense again");
+				throw reject(after, "The quantity of a billed dispense cannot be changed; void it and dispense again");
 			}
 			return;
 		}
 		if (after.getStatus() != before.getStatus()) {
-			throw new APIException("A " + before.getStatus() + " dispense cannot change status; void it instead");
+			throw reject(after, "A " + before.getStatus() + " dispense cannot change status; void it instead");
 		}
 		if (quantityChanged) {
-			throw new APIException("The quantity of a " + before.getStatus() + " dispense cannot be changed");
+			throw reject(after, "The quantity of a " + before.getStatus() + " dispense cannot be changed");
 		}
 	}
 	
@@ -130,16 +132,16 @@ public final class DispenseRules {
 			}
 		}
 		if (otherDeclined) {
-			throw new APIException("This order has a declined dispense, which closes it to further dispensing");
+			throw reject(dispense, "This order has a declined dispense, which closes it to further dispensing");
 		}
 		if (dispense.getStatus() == Status.DECLINED) {
 			if (otherPending) {
-				throw new APIException("Complete or void the dispense awaiting payment before declining this order");
+				throw reject(dispense, "Complete or void the dispense awaiting payment before declining this order");
 			}
 			return;
 		}
 		if (reserved + quantityOf(dispense) > orderedQuantity + EPSILON) {
-			throw new APIException("Dispensing " + format(quantityOf(dispense)) + " would exceed the ordered quantity of "
+			throw reject(dispense, "Dispensing " + format(quantityOf(dispense)) + " would exceed the ordered quantity of "
 			        + format(orderedQuantity) + " (" + format(reserved) + " already dispensed or awaiting payment)");
 		}
 	}
@@ -181,6 +183,16 @@ public final class DispenseRules {
 			}
 		}
 		return decline.getComment() == null ? "Declined" : decline.getComment();
+	}
+	
+	/**
+	 * A rule violation as a {@link ValidationException} carrying the message as a global error, so the
+	 * REST layer answers 400 with the message instead of a 500.
+	 */
+	public static ValidationException reject(CommodityDispense dispense, String message) {
+		Errors errors = new BindException(dispense, "commodityDispense");
+		errors.reject("orderexpansion.dispense.rule", message);
+		return new ValidationException(message, errors);
 	}
 	
 	private static double quantityOf(CommodityDispense dispense) {

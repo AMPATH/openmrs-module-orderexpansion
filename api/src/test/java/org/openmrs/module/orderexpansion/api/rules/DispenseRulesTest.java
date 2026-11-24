@@ -12,6 +12,7 @@ import java.util.Collections;
 import org.junit.Test;
 import org.openmrs.Order;
 import org.openmrs.api.APIException;
+import org.openmrs.api.ValidationException;
 import org.openmrs.module.orderexpansion.api.model.CommodityDispense;
 import org.openmrs.module.orderexpansion.api.model.CommodityDispense.Status;
 import org.openmrs.module.orderexpansion.api.model.MedicalSupplyOrder;
@@ -112,6 +113,20 @@ public class DispenseRulesTest {
 	public void checkAgainstOtherDispenses_shouldAllowDecliningTheRemainderAfterPartialDispense() {
 		DispenseRules.checkAgainstOtherDispenses(5, Collections.singletonList(dispense(order, Status.COMPLETED, 2.0)),
 		    dispense(order, Status.DECLINED, null));
+	}
+	
+	@Test
+	public void ruleViolations_shouldBeValidationExceptionsWithTheMessageAsAGlobalError() {
+		try {
+			DispenseRules.checkAgainstOtherDispenses(5, Collections.singletonList(dispense(order, Status.COMPLETED, 5.0)),
+			    dispense(order, Status.COMPLETED, 1.0));
+			org.junit.Assert.fail("expected a rule violation");
+		}
+		catch (ValidationException e) {
+			// REST answers a ValidationException with 400 and lists its errors; a bare APIException is a 500
+			assertEquals(1, e.getErrors().getGlobalErrorCount());
+			assertTrue(e.getErrors().getGlobalError().getDefaultMessage().contains("would exceed the ordered quantity"));
+		}
 	}
 	
 	// --- fulfillerOutcome ------------------------------------------------------------------------

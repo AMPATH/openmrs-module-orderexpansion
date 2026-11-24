@@ -59,7 +59,7 @@ public class CommodityDispenseServiceImpl extends BaseOpenmrsService implements 
 		OrderTypeRules rules = OrderTypeRules
 		        .parse(Context.getAdministrationService().getGlobalProperty(OrderExpansionConstants.GP_ORDER_TYPE_RULES));
 		if (!rules.isDispensable(order.getOrderType())) {
-			throw new APIException("Orders of type " + order.getOrderType().getName()
+			throw DispenseRules.reject(dispense, "Orders of type " + order.getOrderType().getName()
 			        + " are not dispensable; enable them in " + OrderExpansionConstants.GP_ORDER_TYPE_RULES);
 		}
 		
@@ -70,10 +70,10 @@ public class CommodityDispenseServiceImpl extends BaseOpenmrsService implements 
 		// affects quantities, so the order-level checks apply to new rows and rows leaving PENDING.
 		boolean changesDispensing = before == null || before.getStatus() == Status.PENDING;
 		if (changesDispensing && dispense.getStatus() != Status.DECLINED && !order.isActive()) {
-			throw new APIException("Cannot dispense against an order that is no longer active");
+			throw DispenseRules.reject(dispense, "Cannot dispense against an order that is no longer active");
 		}
 		
-		double orderedQuantity = orderedQuantity(order);
+		double orderedQuantity = orderedQuantity(dispense);
 		if (changesDispensing) {
 			DispenseRules.checkAgainstOtherDispenses(orderedQuantity, otherActiveRows(dispense), dispense);
 		}
@@ -89,7 +89,7 @@ public class CommodityDispenseServiceImpl extends BaseOpenmrsService implements 
 	@Override
 	public CommodityDispense voidCommodityDispense(CommodityDispense dispense, String reason) throws APIException {
 		if (StringUtils.isBlank(reason)) {
-			throw new APIException("A reason is required to void a dispense");
+			throw DispenseRules.reject(dispense, "A reason is required to void a dispense");
 		}
 		// Core's RequiredDataAdvice usually marks the row voided before this method runs, so the void
 		// fields may already be set; the order's status still has to be recomputed either way.
@@ -100,7 +100,7 @@ public class CommodityDispenseServiceImpl extends BaseOpenmrsService implements 
 			dispense.setDateVoided(new Date());
 		}
 		CommodityDispense saved = dao.save(dispense);
-		syncFulfillerStatus(dispense.getOrder(), orderedQuantity(dispense.getOrder()));
+		syncFulfillerStatus(dispense.getOrder(), orderedQuantity(dispense));
 		return saved;
 	}
 	
@@ -123,10 +123,11 @@ public class CommodityDispenseServiceImpl extends BaseOpenmrsService implements 
 		}
 	}
 	
-	private static double orderedQuantity(Order order) {
+	private static double orderedQuantity(CommodityDispense dispense) {
+		Order order = dispense.getOrder();
 		Double quantity = order instanceof QuantifiedOrder ? ((QuantifiedOrder) order).getQuantity() : null;
 		if (quantity == null) {
-			throw new APIException("The order has no quantity to dispense against");
+			throw DispenseRules.reject(dispense, "The order has no quantity to dispense against");
 		}
 		return quantity;
 	}
