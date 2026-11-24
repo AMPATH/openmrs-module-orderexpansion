@@ -22,6 +22,7 @@ public class MedicalSupplyOrder extends ServiceOrder {
 	public MedicalSupplyOrder copy() {
 		MedicalSupplyOrder newOrder = new MedicalSupplyOrder();
 		super.copyHelper(newOrder);
+		copyMedicalSupplyFields(newOrder);
 		return newOrder;
 	}
 	
@@ -48,7 +49,20 @@ public class MedicalSupplyOrder extends ServiceOrder {
 	public MedicalSupplyOrder cloneForRevision() {
 		MedicalSupplyOrder newOrder = new MedicalSupplyOrder();
 		super.cloneForRevisionHelper(newOrder);
+		copyMedicalSupplyFields(newOrder);
 		return newOrder;
+	}
+	
+	/**
+	 * Copies the fields this subclass adds to {@link ServiceOrder}. The base copy and revision helpers
+	 * only copy {@link org.openmrs.Order} and {@link ServiceOrder} fields, so without this a copied or
+	 * revised medical supply order lost its quantity, units, brand and inventory link.
+	 */
+	private void copyMedicalSupplyFields(MedicalSupplyOrder target) {
+		target.setQuantity(getQuantity());
+		target.setQuantityUnits(getQuantityUnits());
+		target.setBrandName(getBrandName());
+		target.setMedicalSuppliesInventoryId(getMedicalSuppliesInventoryId());
 	}
 	
 	public Double getQuantity() {

@@ -268,5 +268,48 @@
         </addColumn>
     </changeSet>
 
+    <!--
+        Release 2.0.0 removed the procedure and medical supply dispense features. Their tables were
+        never written to by AMPATH (confirmed empty in production). Each drop only runs when the table
+        exists and holds no rows; otherwise it is marked as ran and the table is left untouched.
+    -->
+    <changeSet id="${project.parent.artifactId}-20261124-drop-encounter-procedures" author="AMPATH">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="encounter_procedures"/>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM encounter_procedures</sqlCheck>
+        </preConditions>
+        <comment>Drop unused encounter_procedures table</comment>
+        <dropTable tableName="encounter_procedures"/>
+    </changeSet>
+
+    <changeSet id="${project.parent.artifactId}-20261124-drop-procedures" author="AMPATH">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="procedures"/>
+            <not>
+                <tableExists tableName="encounter_procedures"/>
+            </not>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM procedures</sqlCheck>
+        </preConditions>
+        <comment>Drop unused procedures table</comment>
+        <dropTable tableName="procedures"/>
+    </changeSet>
+
+    <changeSet id="${project.parent.artifactId}-20261124-drop-procedure-order" author="AMPATH">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="procedure_order"/>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM procedure_order</sqlCheck>
+        </preConditions>
+        <comment>Drop unused procedure_order table</comment>
+        <dropTable tableName="procedure_order"/>
+    </changeSet>
+
+    <changeSet id="${project.parent.artifactId}-20261124-drop-medical-supply-dispense" author="AMPATH">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="medical_supply_dispense"/>
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM medical_supply_dispense</sqlCheck>
+        </preConditions>
+        <comment>Drop unused medical_supply_dispense table, replaced by commodity_dispense in a later release</comment>
+        <dropTable tableName="medical_supply_dispense"/>
+    </changeSet>
 
 </databaseChangeLog>

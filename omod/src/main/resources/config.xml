@@ -12,9 +12,9 @@
 		${project.parent.description}
 	</description>
 
-	<activator>org.openmrs.module.orderexpansion.ProceduresActivator</activator>
+	<activator>org.openmrs.module.orderexpansion.OrderExpansionActivator</activator>
 
-	<require_version>2.0.5 - 2.*</require_version>
+	<require_version>2.6.1 - 2.*</require_version>
 
 	<require_modules>
 		<require_module>org.openmrs.module.webservices.rest</require_module>
@@ -22,7 +22,6 @@
 
 	<!-- Maps hibernate files, if present -->
 	<mappingFiles>
-		ProcedureOrder.hbm.xml
 		MedicalSupplyOrder.hbm.xml
 	</mappingFiles>
 
