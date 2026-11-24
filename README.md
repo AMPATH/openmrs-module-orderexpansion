@@ -1,4 +1,6 @@
-This repository is a fork of https://github.com/palladiumkenya/openmrs-module-orderexpansion/
+This repository is AMPATH's standalone continuation of https://github.com/mekomsolutions/openmrs-module-orderexpansion, itself a fork of https://github.com/palladiumkenya/openmrs-module-orderexpansion/. It does not track either upstream.
+
+Builds run on every push and pull request to `main`. Pushes to `main` and GitHub releases publish the module to GitHub Packages (`https://maven.pkg.github.com/AMPATH/openmrs-module-orderexpansion`).
 
 # openmrs-module-orderexpansion
 
