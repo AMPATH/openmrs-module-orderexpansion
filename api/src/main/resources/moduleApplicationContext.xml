@@ -23,4 +23,31 @@
     <context:annotation-config/>
     <context:component-scan base-package="org.openmrs.module.orderexpansion" />
 
+    <bean id="commodityDispenseService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="target">
+            <bean class="org.openmrs.module.orderexpansion.api.impl.CommodityDispenseServiceImpl">
+                <property name="dao" ref="commodityDispenseDao"/>
+            </bean>
+        </property>
+        <property name="preInterceptors" ref="serviceInterceptors"/>
+        <property name="transactionAttributeSource" ref="transactionAttributeSource"/>
+    </bean>
+
+    <bean id="commodityDispenseDao" class="org.openmrs.module.orderexpansion.api.dao.impl.CommodityDispenseDaoImpl">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list>
+                <value>org.openmrs.module.orderexpansion.api.CommodityDispenseService</value>
+                <ref bean="commodityDispenseService"/>
+            </list>
+        </property>
+    </bean>
+
 </beans>

@@ -3,7 +3,7 @@ package org.openmrs.module.orderexpansion.api.model;
 import org.openmrs.Concept;
 import org.openmrs.ServiceOrder;
 
-public class MedicalSupplyOrder extends ServiceOrder {
+public class MedicalSupplyOrder extends ServiceOrder implements QuantifiedOrder {
 	
 	public static final long serialVersionUID = 1L;
 	

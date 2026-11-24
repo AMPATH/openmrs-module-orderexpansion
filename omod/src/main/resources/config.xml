@@ -7,7 +7,7 @@
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
 	<package>org.openmrs.module.orderexpansion</package>
-	<author>jecihjoy</author>
+	<author>AMPATH</author>
 	<description>
 		${project.parent.description}
 	</description>
@@ -19,6 +19,16 @@
 	<require_modules>
 		<require_module>org.openmrs.module.webservices.rest</require_module>
 	</require_modules>
+
+	<globalProperty>
+		<property>orderexpansion.orderTypeRules</property>
+		<defaultValue>{}</defaultValue>
+		<description>
+			Per-order-type rules as JSON keyed by order type UUID, for example
+			{"58ea528c-8f62-45f0-86a2-f7d1327b8c56": {"dispensable": true}}. Only order types marked
+			dispensable can have commodity dispenses recorded against them. Set through Initializer.
+		</description>
+	</globalProperty>
 
 	<!-- Maps hibernate files, if present -->
 	<mappingFiles>
