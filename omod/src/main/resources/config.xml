@@ -33,6 +33,7 @@
 	<!-- Maps hibernate files, if present -->
 	<mappingFiles>
 		MedicalSupplyOrder.hbm.xml
+		CommodityOrder.hbm.xml
 	</mappingFiles>
 
 	<messages>

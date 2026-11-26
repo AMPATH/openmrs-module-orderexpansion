@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <joined-subclass name="org.openmrs.module.orderexpansion.commodity.CommodityOrder" extends="org.openmrs.Order" table="commodity_order" lazy="false">
+        <key column="order_id" not-null="true" on-delete="cascade" />
+        <property name="quantity" type="double" column="quantity" />
+        <many-to-one name="quantityUnits" class="org.openmrs.Concept" column="quantity_units" />
+    </joined-subclass>
+</hibernate-mapping>

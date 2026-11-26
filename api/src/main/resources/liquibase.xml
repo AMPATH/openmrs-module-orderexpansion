@@ -401,4 +401,27 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="${project.parent.artifactId}-20261126-create-commodity-order" author="AMPATH">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="commodity_order"/>
+            </not>
+        </preConditions>
+        <comment>Create commodity_order: quantity and units for CommodityOrder (nutrition, later blood products)</comment>
+        <createTable tableName="commodity_order">
+            <column name="order_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quantity" type="double"/>
+            <column name="quantity_units" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="commodity_order_order_id_fk"
+                                 baseTableName="commodity_order" baseColumnNames="order_id"
+                                 referencedTableName="orders" referencedColumnNames="order_id"
+                                 onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="commodity_order_quantity_units_fk"
+                                 baseTableName="commodity_order" baseColumnNames="quantity_units"
+                                 referencedTableName="concept" referencedColumnNames="concept_id"/>
+    </changeSet>
+
 </databaseChangeLog>
